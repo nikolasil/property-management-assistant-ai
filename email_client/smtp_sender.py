@@ -1,6 +1,11 @@
 import smtplib
 from email.mime.text import MIMEText
+import logging
 from config.settings import settings
+
+# Configure logger
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
 
 
 class SMTPSender:
@@ -19,13 +24,13 @@ class SMTPSender:
         msg["Subject"] = subject
 
         try:
+            logger.debug("Connecting to SMTP server %s", self.host)
             with smtplib.SMTP_SSL(self.host) as server:
                 server.login(self.user, self.password)
                 server.sendmail(self.user, [to], msg.as_string())
-            print(f"Sent email to {to}")
+            logger.info("Sent email to %s with subject '%s'", to, subject)
+
         except smtplib.SMTPException as e:
-            # More specific than generic Exception
-            print(f"SMTP send error: {e}")
+            logger.error("SMTP send error to %s: %s", to, e)
         except Exception as e:
-            # fallback for unexpected errors
-            print(f"Unexpected error: {e}")
+            logger.exception("Unexpected error while sending email to %s: %s", to, e)

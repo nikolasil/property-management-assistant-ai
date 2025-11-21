@@ -1,6 +1,11 @@
 import imaplib
 from typing import List, Optional
+import logging
 from config.settings import settings
+
+# Configure logger for this module
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(name)s - %(message)s")
 
 
 class IMAPReader:
@@ -13,8 +18,10 @@ class IMAPReader:
         """
         Connects and logs in to the IMAP server.
         """
+        logger.debug("Connecting to IMAP server %s", self.host)
         mail: imaplib.IMAP4_SSL = imaplib.IMAP4_SSL(self.host)
         mail.login(self.user, self.password)
+        logger.info("Logged in as %s", self.user)
         return mail
 
     def fetch_unread_emails(self) -> List[bytes]:
@@ -29,15 +36,18 @@ class IMAPReader:
             messages_raw: List[bytes]
             status, messages_raw = mail.search(None, "(UNSEEN)")
             if status != "OK" or not messages_raw:
+                logger.info("No unread emails found.")
                 return []
 
             email_ids: List[str] = [eid.decode("utf-8") for eid in messages_raw[0].split()]
+            logger.info("Found %d unread emails.", len(email_ids))
 
             raw_emails: List[bytes] = []
 
             for eid in email_ids:
                 fetch_status, fetch_data = mail.fetch(eid, "(RFC822)")
                 if fetch_status != "OK" or not fetch_data:
+                    logger.warning("Failed to fetch email ID %s", eid)
                     continue
 
                 # filter out only tuples with payload
@@ -47,12 +57,12 @@ class IMAPReader:
                         if payload is not None:
                             raw_emails.append(payload)
 
-
+            logger.info("Fetched %d raw emails.", len(raw_emails))
             return raw_emails
 
         except imaplib.IMAP4.error as e:
-            print(f"IMAP error: {e}")
+            logger.error("IMAP error: %s", e)
             return []
         except Exception as e:
-            print(f"Unexpected error: {e}")
+            logger.exception("Unexpected error while fetching emails: %s", e)
             return []
