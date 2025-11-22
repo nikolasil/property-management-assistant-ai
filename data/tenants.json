@@ -3,16 +3,16 @@
     "tenant_id": "T000",
     "name": "Kostas White",
     "email": "nikolasil2000@gmail.com",
-    "unit_id": "U001",
+    "unit_id": "U000",
     "balance_due": 1700,
     "lease_terms": "Monthly rent is $1700, due on the 1st of each month."
   },
   {
     "tenant_id": "T001",
-    "name": "Wilkin Dan",
+    "name": "Nikolas Iliopoulos",
     "email": "iliopoulos.info@gmail.com",
     "unit_id": "U001",
-    "balance_due": 1200,
+    "balance_due": 2000,
     "lease_terms": "Monthly rent is $1200, due on the 1st of each month."
   },
   {
