@@ -98,25 +98,27 @@ Tradeoff: No retry/backoff currently; network errors are logged.
 ## ⚠️ Known Limitations / Tradeoffs
 
 1. **IMAP is partially async**  
-   While `aioimaplib` is async, some IMAP operations (especially search and fetch) may internally rely on sync calls due to library limitations.
+    While `aioimaplib` is async, some IMAP operations (especially search and fetch) may internally rely on sync calls due to library limitations.
+    Current polling every 2 seconds should be replaced with a more efficient method, like IMAP IDLE or Gmail push notifications.
 
 2. **SMTP is fully async**  
-   Using `aiosmtplib` provides true async sending, but network errors are logged and no retry/backoff is implemented.
+    Using `aiosmtplib` provides true async sending, but network errors are logged and no retry/backoff is implemented.
 
 3. **LLM call is fully asynchronous**
     AsyncOpenAI ensures non-blocking requests, with concurrent execution support.
 
 4. **No persistence layer**  
-   Tickets and logs are still stored as JSON files, not in a database.
+    Tickets and logs are still stored as JSON files, not in a database.
 
 6. **No conversation history**  
-   The LLM receives only single-email context + tenant/unit info
+    The LLM receives only single-email context + tenant/unit info
 
 ## Enchancements (Future features)
 
 ### 🚀 Product / Infrastructure
 
 - Full Gmail OAuth (instead of passwords / app passwords)
+- Current polling every 2 seconds should be replaced with a more efficient method, like IMAP IDLE or Gmail push notifications.
 - Dockerization
 - Web dashboard to view tickets, logs, and email threads
 - Postgres persistence for emails and workflows
