@@ -1,3 +1,4 @@
+from typing import List
 import aiosmtplib
 from email.mime.text import MIMEText
 import logging
@@ -40,7 +41,7 @@ class SMTPSender:
             logger.debug("Disconnected from SMTP server %s:%s", self.host, self.port)
 
     async def send_email_async(
-        self, to: str, subject: str, body: str, connection: aiosmtplib.SMTP | None = None
+        self, to: str, cc: List[str], subject: str, body: str, connection: aiosmtplib.SMTP | None = None
     ) -> None:
         """
         Sends an email asynchronously. If a connection is provided, reuse it.
@@ -48,6 +49,7 @@ class SMTPSender:
         msg = MIMEText(body)
         msg["From"] = self.user
         msg["To"] = to
+        msg["Cc"] = ", ".join(cc)
         msg["Subject"] = subject
 
         try:

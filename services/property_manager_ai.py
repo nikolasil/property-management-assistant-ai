@@ -96,6 +96,7 @@ class PropertyManagerAi:
         # Send reply
         await self.smtp.send_email_async(
             to=email_message.sender,
+            cc=self.data_repo.get_stakeholders_for_intent(llm_response.intent),
             subject=f"Re: {email_message.subject}",
             body=llm_response.reply,
             connection=smtp_conn
