@@ -16,17 +16,20 @@ The system is fully asynchronous and supports concurrency for efficient email pr
 
 ## ⚙️ Setup & Run Instructions
 1. Clone the repository
-git clone https://github.com/nikolasil/domos-assignment.git
-cd domos-assignment
+    git clone https://github.com/nikolasil/domos-assignment.git
+    cd domos-assignment
 
 3. Install dependencies
-pip install -r requirements.txt
+    pip install -r requirements.txt
 
 4. Create a .env file from example file
-cp .env.example .env
+    cp .env.example .env
+
+    - For testing, I created a dummy Gmail account: iliopoulosdomosassignment@gmail.com
+    I’ve generated an app password for SMTP/IMAP access and also created an OpenAI account with that email, including an API key for this project.
 
 5. Run the assistant
-python main.py
+    python main.py
 
 The system will:
 
