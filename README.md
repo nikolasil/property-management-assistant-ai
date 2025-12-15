@@ -1,6 +1,6 @@
-Domos Email Assistant — Backend Engineering Assignment
+Email Assistant — Backend Engineering Project
 
-An AI-powered email assistant for property management that connects to an email inbox, reads unread messages, extracts tenant/unit context, generates intelligent replies using OpenAI, and triggers workflow actions such as maintenance tickets or lockout requests.
+An AI-powered email assistant that connects to an email inbox, reads unread messages, extracts relevant context, generates intelligent replies using OpenAI, and triggers workflow actions such as creating tickets or sending automated responses.
 
 The system is fully asynchronous and supports concurrency for efficient email processing.
 
@@ -16,17 +16,14 @@ The system is fully asynchronous and supports concurrency for efficient email pr
 
 ## ⚙️ Setup & Run Instructions
 1. Clone the repository
-    git clone https://github.com/nikolasil/domos-assignment.git
-    cd domos-assignment
+    git clone https://github.com/nikolasil/property-management-assistant-ai.git
+    cd property-management-assistant-ai
 
 3. Install dependencies
     pip install -r requirements.txt
 
 4. Create a .env file from example file
     cp .env.example .env
-
-    - For testing, I created a dummy Gmail account: iliopoulosdomosassignment@gmail.com
-    I’ve generated an app password for SMTP/IMAP access and also created an OpenAI account with that email, including an API key for this project.
 
 5. Run the assistant
     python main.py
@@ -92,72 +89,3 @@ Async SMTP implemented via aiosmtplib.
 Emails include generated reply and relevant stakeholders (e.g., maintenance team).
 
 Tradeoff: No retry/backoff currently; network errors are logged.
-
-## ⚠️ Known Limitations / Tradeoffs
-
-1. **IMAP is partially async**  
-    While `aioimaplib` is async, some IMAP operations (especially search and fetch) may internally rely on sync calls due to library limitations.
-    Current polling every 2 seconds should be replaced with a more efficient method, like IMAP IDLE or Gmail push notifications.
-
-2. **SMTP is fully async**  
-    Using `aiosmtplib` provides true async sending, but network errors are logged and no retry/backoff is implemented.
-
-3. **LLM call is fully asynchronous**
-    AsyncOpenAI ensures non-blocking requests, with concurrent execution support.
-
-4. **No persistence layer**  
-    Tickets and logs are still stored as JSON files, not in a database.
-
-6. **No conversation history**  
-    The LLM receives only single-email context + tenant/unit info
-
-## 🤖 AI Notes
-
-Used ChatGPT (GPT-4/GPT-5) for architecture planning, async design, prompt design, and refactoring guidance.
-
-#### AI assisted with:
-
-- Designing the modular folder structure
-- Constructing async patterns (semaphores, task spawning, executors)
-- Building workflow abstractions
-- Creating prompt formats for structured JSON
-- Refining error handling and logging
-- Improving system robustness and readability
-- Even with the documentation (README.md)
-
-#### What worked well
-
-- Iterating on design and async concurrency model
-- Generating high-quality boilerplate while focusing on core logic
-- IMAP/SMTP Snippets
-
-#### Challenges
-
-- IMAP & SMTP async libraries
-- Maintaining clean async patterns
-- Ensuring LLM always returns valid JSON (needed careful prompting)
-- Ensuring the LLM email answer was correct
-
-## Enchancements (Future features)
-
-#### 🚀 Product / Infrastructure
-
-- Full Gmail OAuth (instead of passwords / app passwords)
-- Current polling every 2 seconds should be replaced with a more efficient method, like IMAP IDLE or Gmail push notifications.
-- Dockerization
-- Web dashboard to view tickets, logs, and email threads
-- Postgres persistence for emails and workflows
-- Prometheus metrics
-
-#### ⚙️ Backend / Code Quality
-
-- Unit tests & integration tests (pytest)
-- Retry & backoff strategy for IMAP/SMTP/LLM.
-    Now there is only a generic retry for the whole process of handling the mail
-- Add internal event bus (Redis)
-
-#### 🤖 AI Enhancements
-
-- Embedding-based similarity search for conversation history
-- Fine-tuning or RAG prompts for more consistent replies
-- Evaluation metrics ("response correctness", "hallucination score")
